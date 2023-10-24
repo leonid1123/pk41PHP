@@ -4,12 +4,13 @@ define("user", "test");
 define("pass", "test");
 define("database", "test");
 $connState = "";
-$mysqli = new mysqli(adress, user, pass, database);
-if ($mysqli === false) {
-    die("Насяльника фсё пльоха" . $mysqli->connect_error);
-    $connState = "Подключение не удалось";
-} else {
-    $connState = "Подключение прошло успешно!";
+try {
+    $pdo = new PDO("mysql:host=" . adress . ";dbname=" . database, user, pass);
+    // Set the PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $connState = "всё хорошо";
+} catch (PDOException $e) {
+    die("ERROR: Could not connect. " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -32,7 +33,10 @@ if ($mysqli === false) {
     </form>
     <p>
         <?php
-        echo $_POST["userLogin"]." ".$_POST["userPassword"];
+        $stmt = $pdo->prepare("SELECT * FROM users;");
+        $stmt->execute();
+        echo $stmt->rowCount();
+        #echo $_POST["userLogin"] . " " . $_POST["userPassword"];
         ?>
     </p>
 </body>
