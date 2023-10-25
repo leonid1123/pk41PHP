@@ -29,13 +29,17 @@ try {
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <input name="userLogin" type="text">
         <input name="userPassword" type="text">
-        <input type="submit" value="Войти">
+        <input name="go" type="submit" value="Войти">
     </form>
     <p>
         <?php
-        $stmt = $pdo->prepare("SELECT * FROM users;");
-        $stmt->execute();
-        echo $stmt->rowCount();
+        if (isset($_POST["go"])){
+            $sqlReq = "SELECT * FROM users WHERE login='" . $_POST['userLogin'] . "' AND password='" . 
+            $_POST['userPassword'] . "';";
+            $stmt = $pdo->prepare($sqlReq);
+            $stmt->execute();
+            echo $stmt->rowCount();
+        }
         #echo $_POST["userLogin"] . " " . $_POST["userPassword"];
         ?>
     </p>
